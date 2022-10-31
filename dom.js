@@ -9,9 +9,19 @@ let userdetails={
 
     uname,uemail
 }
-localStorage.setItem(uemail,JSON.stringify(userdetails))
+// localStorage.setItem(uemail,JSON.stringify(userdetails))
 
-showNewUser(userdetails)
+axios.post('https://crudcrud.com/api/6966bd97409b4e2b9c36414a15fc1f19/appointmentData',userdetails)
+.then((res)=>{
+    showNewUser(res.data)
+    
+})
+.catch((err)=>{
+
+    console.log(err)
+})
+
+
 }
 
 
@@ -37,7 +47,7 @@ deleteuser(email)
 
 function deleteuser(emailid){
 
-    console.log(emailid)
+    
     localStorage.removeItem(emailid)
     removeUserFromView(emailid)
 }
