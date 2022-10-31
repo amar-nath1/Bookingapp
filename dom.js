@@ -23,17 +23,24 @@ axios.post('https://crudcrud.com/api/6966bd97409b4e2b9c36414a15fc1f19/appointmen
 
 
 }
+window.addEventListener("DOMContentLoaded",()=>{
+axios.get('https://crudcrud.com/api/6966bd97409b4e2b9c36414a15fc1f19/appointmentData')
+.then((res)=>{
 
+    for (let i of res.data){
+        showNewUser(i)
+    }
+})
+.catch((err)=>{
 
-for (let i=0;i<localStorage.length;i++){
+    console.log(err)
+})
 
-    udet=JSON.parse(localStorage.getItem(localStorage.key(i)))
-    showNewUser(udet)
-}
+})
 
 function showNewUser(user){
 let ulist=document.getElementById('userList')
-let appendli=`<li id=${user.uemail}>${user.uname}<button style= 'margin-left: 30px;'onclick=edituser('${user.uname}','${user.uemail}')>Edit</button>
+let appendli=`<li id=${user.uemail}>${user.uname} - ${user.uemail}<button style= 'margin-left: 30px;'onclick=edituser('${user.uname}','${user.uemail}')>Edit</button>
                                         <button style= 'margin-left: 2px;'onclick=deleteuser('${user.uemail}')>Delete</button></li>`
 ulist.innerHTML=ulist.innerHTML+appendli
 }
