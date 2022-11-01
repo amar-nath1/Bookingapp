@@ -1,6 +1,6 @@
 
 
-function saveToLocal(event){
+function saveToServer(event){
  event.preventDefault()
  let uname=document.getElementById('username').value
 let uemail=document.getElementById('useremail').value
@@ -10,8 +10,11 @@ let userdetails={
     uname,uemail
 }
 // localStorage.setItem(uemail,JSON.stringify(userdetails))
+axios.get('https://crudcrud.com/api/4a6bfdc7526c4c529fea166f1ee93262/appointmentData').then((res)=>{
 
-axios.post('https://crudcrud.com/api/6966bd97409b4e2b9c36414a15fc1f19/appointmentData',userdetails)
+if (res.data.length==0){
+
+    axios.post('https://crudcrud.com/api/4a6bfdc7526c4c529fea166f1ee93262/appointmentData',userdetails)
 .then((res)=>{
     showNewUser(res.data)
     
@@ -21,10 +24,60 @@ axios.post('https://crudcrud.com/api/6966bd97409b4e2b9c36414a15fc1f19/appointmen
     console.log(err)
 })
 
+}
+else{
+
+    let emailexists=false
+    let existedobj=null
+
+    for (let i of res.data){
+        
+        if (i.uemail==userdetails.uemail){
+
+            emailexists=true
+            existedobj=i
+            break
+                        
+        }
+        
+    }
+
+    if (emailexists){
+        
+        let link='https://crudcrud.com/api/4a6bfdc7526c4c529fea166f1ee93262/appointmentData/'+existedobj._id
+
+            axios.put(link,userdetails).then(()=>{
+                removeUserFromView(userdetails.uemail)
+                showNewUser(userdetails)})
+                
+                
+            .catch((err)=>{console.log(err)})
+    }
+
+    else {
+
+        axios.post('https://crudcrud.com/api/4a6bfdc7526c4c529fea166f1ee93262/appointmentData',userdetails)
+.then((res)=>{
+showNewUser(res.data)
+
+})
+.catch((err)=>{
+
+console.log(err)
+})
+
+    }
+
+    
+}
+
+})
+
+
 
 }
 window.addEventListener("DOMContentLoaded",()=>{
-axios.get('https://crudcrud.com/api/6966bd97409b4e2b9c36414a15fc1f19/appointmentData')
+axios.get('https://crudcrud.com/api/4a6bfdc7526c4c529fea166f1ee93262/appointmentData')
 .then((res)=>{
 
     for (let i of res.data){
@@ -41,7 +94,7 @@ axios.get('https://crudcrud.com/api/6966bd97409b4e2b9c36414a15fc1f19/appointment
 function showNewUser(user){
 let ulist=document.getElementById('userList')
 let appendli=`<li id=${user.uemail}>${user.uname} - ${user.uemail}<button style= 'margin-left: 30px;'onclick=edituser('${user.uname}','${user.uemail}')>Edit</button>
-                                        <button style= 'margin-left: 2px;'onclick=deleteuser('${user.uemail}')>Delete</button></li>`
+                                        <button style= 'margin-left: 2px;'onclick=deleteuser('${user._id}','${user.uemail}')>Delete</button></li>`
 ulist.innerHTML=ulist.innerHTML+appendli
 }
 
@@ -52,11 +105,17 @@ document.getElementById('useremail').value=email
 deleteuser(email)
 }
 
-function deleteuser(emailid){
+function deleteuser(id,email){
+
+    let link=  'https://crudcrud.com/api/4a6bfdc7526c4c529fea166f1ee93262/appointmentData/'+id 
+    axios.delete(link).then(()=>{
+
+        removeUserFromView(email)
+
+    })
+    .catch((err)=>{console.log(err)})
 
     
-    localStorage.removeItem(emailid)
-    removeUserFromView(emailid)
 }
 
 function removeUserFromView(email){
