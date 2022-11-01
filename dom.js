@@ -93,16 +93,16 @@ axios.get('https://crudcrud.com/api/4a6bfdc7526c4c529fea166f1ee93262/appointment
 
 function showNewUser(user){
 let ulist=document.getElementById('userList')
-let appendli=`<li id=${user.uemail}>${user.uname} - ${user.uemail}<button style= 'margin-left: 30px;'onclick=edituser('${user.uname}','${user.uemail}')>Edit</button>
+let appendli=`<li id=${user.uemail}>${user.uname} - ${user.uemail}<button style= 'margin-left: 30px;'onclick=edituser('${user.uname}','${user.uemail}','${user._id}')>Edit</button>
                                         <button style= 'margin-left: 2px;'onclick=deleteuser('${user._id}','${user.uemail}')>Delete</button></li>`
 ulist.innerHTML=ulist.innerHTML+appendli
 }
 
-function edituser(name,email){
+function edituser(name,email,id){
 
 document.getElementById('username').value=name
 document.getElementById('useremail').value=email
-deleteuser(email)
+deleteuser(id,email)
 }
 
 function deleteuser(id,email){
